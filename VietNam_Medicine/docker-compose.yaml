@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  atlas_transform_engine:
+    build:
+      context: ./etl_pipeline
+      dockerfile: Dockerfile
+    container_name: pharma_transform_engine
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - DB_NAME=${DB_NAME}
+      - SOURCE_URL=${SOURCE_URL}
+      - CLEAN_COLLECTION_NAME=${CLEAN_COLLECTION_NAME}
+    volumes:
+      - ./output:/output
+
+  analytics_dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: pharma_analytics_dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - DB_NAME=${DB_NAME}
+      - CLEAN_COLLECTION_NAME=${CLEAN_COLLECTION_NAME}
+    restart: always
