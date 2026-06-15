@@ -7,7 +7,7 @@ import os
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = os.environ.get("DB_NAME", "vietnam_pharma_raw")
-CLEAN_COLLECTION = os.environ.get("CLEAN_COLLECTION_NAME", "clean_drug_registry")
+CLEAN_COLLECTION = os.environ.get("CLEAN_COLLECTION_NAME", "cleaned_vietnam_med_price")
 
 @st.cache_data
 def load_clean_data():
