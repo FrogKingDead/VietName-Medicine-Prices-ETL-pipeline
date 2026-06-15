@@ -142,18 +142,26 @@ try:
         # CHART 7: Medicine Registration Timeline
         st.markdown("---")
         st.subheader("Medicine Registration Timeline Distribution")
+        
         if "publicationDate" in df.columns:
-            df["pub_date"] = pd.to_datetime(df["publicationDate"], errors="coerce")
-            timeline_df = df.dropna(subset=["pub_date"]).copy()
+            df["pub_year"] = pd.to_datetime(df["publicationDate"], errors="coerce").dt.year
+            timeline_df = df.dropna(subset=["pub_year"]).copy()
 
             if not timeline_df.empty:
-                timeline_df["Year-Month"] = timeline_df["pub_date"].dt.to_period("M")
-                time_series = timeline_df.groupby("Year-Month").size().to_frame("Count").reset_index()
-                time_series["Year-Month"] = time_series["Year-Month"].astype(str)
-                fig, ax = plt.subplots(figsize=(12, 4))
-                sns.lineplot(data=time_series, x="Year-Month", y="Count", marker="o", color="#1f77b4", linewidth=2.5)
-                plt.xticks(rotation=45)
+                time_series = timeline_df.groupby("pub_year").size().to_frame("Count").reset_index()
+                time_series["pub_year"] = time_series["pub_year"].astype(int)
+                time_series = time_series.sort_values("pub_year")
+                
+                fig, ax = plt.subplots(figsize=(6, 4))
+                sns.lineplot(data=time_series, x="pub_year", y="Count", marker="o", color="#1f77b4", linewidth=2.5, ax=ax)
+                
+                ax.set_ylabel("Number of Medications")
+                ax.set_xlabel("Year")
+                plt.xticks(rotation=15)
+                
+                fig.tight_layout()
                 st.pyplot(fig)
+                plt.close(fig)
                 
         # CHART 8: Frequently Used Ingredients
         st.markdown("---")
